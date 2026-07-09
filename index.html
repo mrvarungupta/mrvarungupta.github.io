@@ -128,30 +128,54 @@ img{ max-width:100%; display:block; }
 .envelope-btn.opened .wax-seal{ animation:none; opacity:0; transform:translate(-50%,-50%) scale(0); transition:all 0.4s ease; }
 .tap-hint{ font-family:var(--font-ui); font-size:0.78rem; color:rgba(74,63,59,0.5); margin-top:10px; letter-spacing:0.04em; }
 .bouquet-grid{ display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin:22px 0 10px; max-width:480px; }
-.flower-btn{ position:relative; width:96px; height:130px; perspective:900px; }
-.flower-inner{
-  position:relative; width:100%; height:100%; transition:transform 0.6s cubic-bezier(.4,.2,.2,1);
-  transform-style:preserve-3d;
+
+/* ---- Flower cards (no longer flip; they open a popup) ---- */
+.flower-btn{ position:relative; width:96px; height:120px; }
+.flower-front{
+  width:100%; height:100%; border-radius:14px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding:8px;
+  background:rgba(255,255,255,0.55); border:1.5px dashed var(--gold-line);
+  transition:transform 0.25s ease, opacity 0.3s ease, border-color 0.3s ease;
 }
-.flower-btn.picked .flower-inner{ transform:rotateY(180deg); }
-.flower-face{
-  position:absolute; inset:0; backface-visibility:hidden; border-radius:14px;
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:8px;
-}
-.flower-front{ background:rgba(255,255,255,0.55); border:1.5px dashed var(--gold-line); }
-.flower-front svg{ width:38px; height:38px; }
+.flower-front svg{ width:40px; height:40px; }
 .flower-front span{ font-family:var(--font-ui); font-size:0.62rem; color:var(--rose-deep); font-weight:600; letter-spacing:0.05em; }
-.flower-back{
-  background:var(--paper-warm); border:1px solid rgba(201,164,106,0.4); transform:rotateY(180deg);
-  font-family:var(--font-hand); font-size:0.8rem; line-height:1.35; color:var(--ink);
-}
-.flower-back .flower-label{
-  font-family:var(--font-ui); font-size:0.55rem; text-transform:uppercase; letter-spacing:0.08em;
-  color:var(--rose-deep); font-weight:700; margin-bottom:4px;
-}
+.flower-btn:hover .flower-front{ transform:translateY(-3px); }
+.flower-btn.picked .flower-front{ opacity:0.55; border-style:solid; border-color:var(--rose-deep); transform:scale(0.96); }
+.flower-btn.picked .flower-front span{ color:rgba(74,63,59,0.5); }
+
 .basket-wrap{ position:relative; width:min(80vw, 220px); margin-top:8px; }
 .basket-svg{ width:100%; height:auto; }
 .basket-flowers{ position:absolute; top:-14px; left:0; right:0; display:flex; justify-content:center; gap:4px; font-size:1.1rem; }
+
+/* ---- Wish popup ---- */
+.wish-overlay{
+  position:fixed; inset:0; z-index:50;
+  display:flex; align-items:center; justify-content:center; padding:28px;
+  background:rgba(74,63,59,0.45); backdrop-filter:blur(2px);
+  opacity:0; visibility:hidden; transition:opacity 0.3s ease;
+}
+.wish-overlay.open{ opacity:1; visibility:visible; }
+.wish-modal{
+  position:relative; background:var(--paper-warm); border-radius:18px;
+  padding:30px 26px 26px; max-width:340px; width:100%;
+  box-shadow:var(--shadow-soft); border:1px solid rgba(201,164,106,0.4);
+  text-align:center; transform:scale(0.9) translateY(10px); transition:transform 0.3s ease;
+}
+.wish-overlay.open .wish-modal{ transform:scale(1) translateY(0); }
+.wish-modal .flower-icon{ width:44px; height:44px; margin:0 auto 6px; }
+.wish-modal .flower-label{
+  font-family:var(--font-ui); font-size:0.6rem; text-transform:uppercase; letter-spacing:0.1em;
+  color:var(--rose-deep); font-weight:700; margin-bottom:10px; display:block;
+}
+.wish-modal-text{
+  font-family:var(--font-hand); font-size:1.2rem; line-height:1.6; color:var(--ink); margin-bottom:22px;
+}
+.wish-close{
+  font-family:var(--font-ui); font-weight:600; font-size:0.85rem; color:#fff;
+  padding:10px 26px; border-radius:100px; background:var(--rose-deep);
+  box-shadow:0 8px 18px rgba(201,123,134,0.35);
+}
+
 #screen-4{ background:radial-gradient(circle at 50% 30%, var(--rose-deep) 0%, #9C5A66 100%); border-radius:0; }
 #screen-4 .eyebrow{ color:rgba(255,255,255,0.85); }
 #screen-4 .finale-credit{ color:rgba(255,255,255,0.75); font-family:var(--font-ui); font-size:0.85rem; margin:18px 0 26px; }
@@ -174,7 +198,7 @@ img{ max-width:100%; display:block; }
 @media (hover:hover) and (pointer:fine){ .stage-nav{ display:flex; } }
 @media (max-width:420px){
   .paper-card{ padding:30px 20px; }
-  .flower-btn{ width:80px; height:112px; }
+  .flower-btn{ width:80px; height:108px; }
 }
 </style>
 </head>
@@ -286,6 +310,16 @@ img{ max-width:100%; display:block; }
 
 </div>
 
+<!-- Wish popup -->
+<div class="wish-overlay" id="wish-overlay">
+  <div class="wish-modal" id="wish-modal">
+    <div class="flower-icon" id="wish-icon"></div>
+    <span class="flower-label" id="wish-label"></span>
+    <p class="wish-modal-text" id="wish-text"></p>
+    <button class="wish-close" id="wish-close">Close ♡</button>
+  </div>
+</div>
+
 <button class="stage-nav prev" id="stage-nav-prev" aria-label="Previous">‹</button>
 <button class="stage-nav next" id="stage-nav-next" aria-label="Next">›</button>
 
@@ -340,6 +374,10 @@ I love you endlessly. ❤️🌹`,
   document.getElementById('stage-nav-prev').addEventListener('click', () => goToScreen(currentIndex - 1));
   document.getElementById('stage-nav-next').addEventListener('click', () => goToScreen(currentIndex + 1));
   window.addEventListener('keydown', (e) => {
+    if (document.getElementById('wish-overlay').classList.contains('open')) {
+      if (e.key === 'Escape') closeWish();
+      return;
+    }
     if (e.key === 'ArrowRight') goToScreen(currentIndex + 1);
     if (e.key === 'ArrowLeft') goToScreen(currentIndex - 1);
   });
@@ -350,10 +388,13 @@ I love you endlessly. ❤️🌹`,
   }, { passive: true });
   document.addEventListener('touchend', (e) => {
     if (touchStartX === null) return;
-    const dx = e.changedTouches[0].clientX - touchStartX;
-    const dy = e.changedTouches[0].clientY - touchStartY;
-    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
-      if (dx < 0) goToScreen(currentIndex + 1); else goToScreen(currentIndex - 1);
+    // Ignore swipes while the wish popup is open
+    if (!document.getElementById('wish-overlay').classList.contains('open')) {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      const dy = e.changedTouches[0].clientY - touchStartY;
+      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        if (dx < 0) goToScreen(currentIndex + 1); else goToScreen(currentIndex - 1);
+      }
     }
     touchStartX = null; touchStartY = null;
   }, { passive: true });
@@ -424,23 +465,44 @@ I love you endlessly. ❤️🌹`,
 
   document.getElementById('continue-btn').addEventListener('click', () => goToScreen(currentIndex + 1));
 
+  /* ---------- Bouquet + wish popup ---------- */
   const bouquetGrid = document.getElementById('bouquet-grid');
   const basketFlowers = document.getElementById('basket-flowers');
   const flowerColors = ['#C97B86', '#D8B478', '#E8A0AD', '#B98BA3'];
   function flowerSVG(color) {
     return `<svg viewBox="0 0 40 40"><g fill="${color}"><circle cx="20" cy="12" r="7"/><circle cx="30" cy="20" r="7"/><circle cx="20" cy="28" r="7"/><circle cx="10" cy="20" r="7"/></g><circle cx="20" cy="20" r="6" fill="#F0D9A0"/></svg>`;
   }
+
+  const wishOverlay = document.getElementById('wish-overlay');
+  const wishIcon = document.getElementById('wish-icon');
+  const wishLabel = document.getElementById('wish-label');
+  const wishText = document.getElementById('wish-text');
+
+  function openWish(wish, color) {
+    wishIcon.innerHTML = flowerSVG(color);
+    wishLabel.textContent = wish.label;
+    wishText.textContent = wish.text;
+    wishOverlay.classList.add('open');
+  }
+  function closeWish() { wishOverlay.classList.remove('open'); }
+
+  document.getElementById('wish-close').addEventListener('click', closeWish);
+  wishOverlay.addEventListener('click', (e) => { if (e.target === wishOverlay) closeWish(); });
+
   CONFIG.bouquetWishes.forEach((wish, i) => {
-    const btn = document.createElement('div'); btn.className = 'flower-btn';
-    btn.innerHTML = `<div class="flower-inner"><div class="flower-face flower-front">${flowerSVG(flowerColors[i % flowerColors.length])}<span>pick me</span></div><div class="flower-face flower-back"><span class="flower-label">${wish.label}</span><span>${wish.text}</span></div></div>`;
+    const color = flowerColors[i % flowerColors.length];
+    const btn = document.createElement('button'); btn.className = 'flower-btn'; btn.type = 'button';
+    btn.innerHTML = `<div class="flower-front">${flowerSVG(color)}<span>pick me</span></div>`;
     btn.addEventListener('click', () => {
-      if (btn.classList.contains('picked')) return;
-      btn.classList.add('picked');
-      const mini = document.createElement('span');
-      mini.textContent = '🌸'; mini.style.opacity = '0';
-      mini.style.transition = 'opacity 0.4s ease, transform 0.4s ease'; mini.style.transform = 'translateY(6px)';
-      basketFlowers.appendChild(mini);
-      requestAnimationFrame(() => { mini.style.opacity = '1'; mini.style.transform = 'translateY(0)'; });
+      if (!btn.classList.contains('picked')) {
+        btn.classList.add('picked');
+        const mini = document.createElement('span');
+        mini.textContent = '🌸'; mini.style.opacity = '0';
+        mini.style.transition = 'opacity 0.4s ease, transform 0.4s ease'; mini.style.transform = 'translateY(6px)';
+        basketFlowers.appendChild(mini);
+        requestAnimationFrame(() => { mini.style.opacity = '1'; mini.style.transform = 'translateY(0)'; });
+      }
+      openWish(wish, color);
     });
     bouquetGrid.appendChild(btn);
   });
