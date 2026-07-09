@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#C97B86" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="format-detection" content="telephone=no" />
+<title>A Little Something For You, Madamji ❤️</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600;1,700&family=Caveat:wght@500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --paper:#FAF6EF;
+  --paper-warm:#F3EAD9;
+  --blush:#F6D9DE;
+  --rose-deep:#C97B86;
+  --ink:#4A3F3B;
+  --gold-line:#D8B478;
+  --seal:#B23A48;
+  --shadow-soft:0 20px 50px rgba(74,63,59,0.12);
+  --font-heading:'Playfair Display', serif;
+  --font-hand:'Caveat', cursive;
+  --font-ui:'Quicksand', sans-serif;
+}
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+}
+*{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html{ height:100%; height:100dvh; }
+body{
+  font-family:var(--font-ui);
+  background:var(--paper);
+  color:var(--ink);
+  overflow:hidden;
+  height:100%;
+  height:100dvh;
+  position:fixed; inset:0;
+  overscroll-behavior:none;
+  touch-action:manipulation;
+}
+button{ font-family:inherit; cursor:pointer; border:none; background:none; }
+img{ max-width:100%; display:block; }
+#ambient-canvas{ position:fixed; inset:0; z-index:1; pointer-events:none; }
+.stage{ position:relative; width:100%; height:100%; z-index:3; }
+.card-screen{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center;
+  padding:8vh 7vw;
+  padding:max(8dvh, env(safe-area-inset-top)) max(7vw, env(safe-area-inset-right)) max(8dvh, env(safe-area-inset-bottom)) max(7vw, env(safe-area-inset-left));
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  opacity:0; visibility:hidden; pointer-events:none;
+  transform:translateX(40px);
+  transition:opacity 0.5s ease, transform 0.5s ease;
+}
+.card-screen.active{ opacity:1; visibility:visible; pointer-events:auto; transform:translateX(0); }
+.card-screen.leaving-left{ transform:translateX(-40px); }
+.eyebrow{
+  font-family:var(--font-ui); font-weight:600; letter-spacing:0.14em; text-transform:lowercase;
+  font-size:0.82rem; color:var(--rose-deep); margin-bottom:14px;
+}
+.eyebrow.small-caps{ letter-spacing:0.08em; font-size:0.72rem; }
+.soft-heading{
+  font-family:var(--font-heading); font-style:italic; font-weight:700;
+  font-size:clamp(1.9rem, 6vw, 3rem); line-height:1.25; color:var(--ink);
+}
+.soft-heading.small{ font-size:clamp(1.5rem, 5vw, 2.2rem); }
+.script-sub{ font-family:var(--font-hand); font-size:clamp(1.3rem, 4vw, 1.8rem); color:var(--rose-deep); margin-top:10px; }
+.script-sub.small{ font-size:clamp(1rem, 3vw, 1.2rem); margin-top:8px; max-width:340px; }
+.script-heading{
+  font-family:var(--font-heading); font-style:italic; font-weight:700;
+  font-size:clamp(1.7rem, 5.5vw, 2.4rem); color:var(--rose-deep); margin:6px 0 4px;
+}
+.script-heading.big{ font-size:clamp(2.2rem, 8vw, 3.4rem); color:#fff; line-height:1.3; }
+.heart-outline{ font-size:0.8em; }
+.paper-card{
+  background:var(--paper-warm); border-radius:18px; box-shadow:var(--shadow-soft);
+  padding:38px 30px; max-width:480px; width:100%; position:relative;
+  border:1px solid rgba(201,164,106,0.35);
+}
+.letter-card{
+  max-height:82vh; max-height:82dvh; overflow-y:auto; padding-top:56px;
+  touch-action:pan-y; -webkit-overflow-scrolling:touch;
+}
+.letter-card::-webkit-scrollbar{ width:4px; }
+.letter-card::-webkit-scrollbar-thumb{ background:var(--gold-line); border-radius:10px; }
+.mascot-avatar{
+  position:absolute; top:-30px; left:50%; transform:translateX(-50%);
+  width:60px; height:60px; border-radius:50%; background:#fff;
+  box-shadow:0 8px 20px rgba(74,63,59,0.15);
+}
+.mascot-avatar.small{ width:52px; height:52px; }
+.card-heading{
+  font-family:var(--font-heading); font-style:italic; font-weight:700;
+  font-size:clamp(1.5rem, 5vw, 2rem); color:var(--ink); margin:20px 0 14px;
+}
+.card-message{
+  font-family:var(--font-hand); font-size:clamp(1.05rem, 3vw, 1.25rem); line-height:1.6; color:var(--ink);
+  margin-bottom:26px;
+}
+.dotted-divider{ border-top:1.5px dotted var(--gold-line); width:70%; margin:0 auto 22px; }
+.letter-body{
+  font-family:var(--font-hand); font-size:clamp(1.05rem, 2.8vw, 1.25rem); line-height:1.75;
+  color:var(--ink); text-align:left; white-space:pre-wrap; margin-bottom:26px;
+}
+.btn-soft{
+  font-family:var(--font-ui); font-weight:600; font-size:0.92rem; color:#fff;
+  padding:14px 30px; border-radius:100px; background:var(--rose-deep);
+  box-shadow:0 10px 24px rgba(201,123,134,0.35); transition:transform 0.25s ease;
+}
+.btn-soft:hover{ transform:translateY(-2px); }
+.btn-soft .arrow{ display:inline-block; margin-left:4px; }
+.mascot-wrap{ margin:18px 0; width:150px; }
+.mascot-wrap.small{ width:100px; margin:10px 0; }
+.mascot-svg{ width:100%; height:auto; }
+.envelope-btn{ position:relative; width:min(80vw, 230px); margin:12px 0 8px; animation:envFloat 3s ease-in-out infinite; }
+@keyframes envFloat{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-6px); } }
+.envelope-svg{ width:100%; height:auto; filter:drop-shadow(0 14px 26px rgba(74,63,59,0.18)); }
+.wax-seal{ position:absolute; top:50%; left:50%; width:15%; transform:translate(-50%,-50%); animation:sealPulse 2.2s ease-in-out infinite; }
+.wax-seal svg{ width:100%; height:auto; filter:drop-shadow(0 4px 8px rgba(142,43,55,0.4)); }
+@keyframes sealPulse{ 0%,100%{ transform:translate(-50%,-50%) scale(1); } 50%{ transform:translate(-50%,-50%) scale(1.08); } }
+.envelope-btn.opened{ animation:none; }
+.envelope-btn.opened .wax-seal{ animation:none; opacity:0; transform:translate(-50%,-50%) scale(0); transition:all 0.4s ease; }
+.tap-hint{ font-family:var(--font-ui); font-size:0.78rem; color:rgba(74,63,59,0.5); margin-top:10px; letter-spacing:0.04em; }
+.bouquet-grid{ display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin:22px 0 10px; max-width:480px; }
+
+/* ---- Flower cards (no longer flip; they open a popup) ---- */
+.flower-btn{ position:relative; width:96px; height:120px; }
+.flower-front{
+  width:100%; height:100%; border-radius:14px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding:8px;
+  background:rgba(255,255,255,0.55); border:1.5px dashed var(--gold-line);
+  transition:transform 0.25s ease, opacity 0.3s ease, border-color 0.3s ease;
+}
+.flower-front svg{ width:40px; height:40px; }
+.flower-front span{ font-family:var(--font-ui); font-size:0.62rem; color:var(--rose-deep); font-weight:600; letter-spacing:0.05em; }
+.flower-btn:hover .flower-front{ transform:translateY(-3px); }
+.flower-btn.picked .flower-front{ opacity:0.55; border-style:solid; border-color:var(--rose-deep); transform:scale(0.96); }
+.flower-btn.picked .flower-front span{ color:rgba(74,63,59,0.5); }
+
+.basket-wrap{ position:relative; width:min(80vw, 220px); margin-top:8px; }
+.basket-svg{ width:100%; height:auto; }
+.basket-flowers{ position:absolute; top:-14px; left:0; right:0; display:flex; justify-content:center; gap:4px; font-size:1.1rem; }
+
+/* ---- Wish popup ---- */
+.wish-overlay{
+  position:fixed; inset:0; z-index:50;
+  display:flex; align-items:center; justify-content:center; padding:28px;
+  background:rgba(74,63,59,0.45); backdrop-filter:blur(2px);
+  opacity:0; visibility:hidden; transition:opacity 0.3s ease;
+}
+.wish-overlay.open{ opacity:1; visibility:visible; }
+.wish-modal{
+  position:relative; background:var(--paper-warm); border-radius:18px;
+  padding:30px 26px 26px; max-width:340px; width:100%;
+  box-shadow:var(--shadow-soft); border:1px solid rgba(201,164,106,0.4);
+  text-align:center; transform:scale(0.9) translateY(10px); transition:transform 0.3s ease;
+}
+.wish-overlay.open .wish-modal{ transform:scale(1) translateY(0); }
+.wish-modal .flower-icon{ width:44px; height:44px; margin:0 auto 6px; }
+.wish-modal .flower-label{
+  font-family:var(--font-ui); font-size:0.6rem; text-transform:uppercase; letter-spacing:0.1em;
+  color:var(--rose-deep); font-weight:700; margin-bottom:10px; display:block;
+}
+.wish-modal-text{
+  font-family:var(--font-hand); font-size:1.2rem; line-height:1.6; color:var(--ink); margin-bottom:22px;
+}
+.wish-close{
+  font-family:var(--font-ui); font-weight:600; font-size:0.85rem; color:#fff;
+  padding:10px 26px; border-radius:100px; background:var(--rose-deep);
+  box-shadow:0 8px 18px rgba(201,123,134,0.35);
+}
+
+#screen-4{ background:radial-gradient(circle at 50% 30%, var(--rose-deep) 0%, #9C5A66 100%); border-radius:0; }
+#screen-4 .eyebrow{ color:rgba(255,255,255,0.85); }
+#screen-4 .finale-credit{ color:rgba(255,255,255,0.75); font-family:var(--font-ui); font-size:0.85rem; margin:18px 0 26px; }
+#screen-4 #replay-btn{ background:#fff; color:var(--rose-deep); }
+.progress-dots{
+  position:fixed; top:calc(16px + env(safe-area-inset-top)); left:0; right:0; z-index:10;
+  display:flex; justify-content:center; gap:6px;
+}
+.progress-dot{ width:26px; height:3px; border-radius:10px; background:rgba(201,123,134,0.2); transition:background 0.3s ease; }
+.progress-dot.done{ background:var(--rose-deep); }
+.progress-dot.current{ background:var(--gold-line); }
+.stage-nav{
+  position:fixed; top:50%; transform:translateY(-50%); z-index:10;
+  width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,0.6);
+  color:var(--rose-deep); font-size:1.6rem; box-shadow:var(--shadow-soft);
+  display:none; align-items:center; justify-content:center;
+}
+.stage-nav.prev{ left:16px; }
+.stage-nav.next{ right:16px; }
+@media (hover:hover) and (pointer:fine){ .stage-nav{ display:flex; } }
+@media (max-width:420px){
+  .paper-card{ padding:30px 20px; }
+  .flower-btn{ width:80px; height:108px; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="ambient-canvas"></canvas>
+<div class="progress-dots" id="progress-dots"></div>
+
+<div id="stage" class="stage">
+
+  <section class="card-screen" data-screen="0" id="screen-0">
+    <p class="eyebrow">♡ a birthday surprise</p>
+    <h1 class="soft-heading">a little something<br>for you</h1>
+    <p class="script-sub">happy birthday <span class="heart-outline">♡</span></p>
+    <div class="mascot-wrap">
+      <svg viewBox="0 0 160 120" class="mascot-svg" aria-hidden="true">
+        <ellipse cx="55" cy="78" rx="30" ry="24" fill="#F3EAD9" stroke="#C97B86" stroke-width="2"/>
+        <ellipse cx="30" cy="40" rx="8" ry="20" fill="#F3EAD9" stroke="#C97B86" stroke-width="2" transform="rotate(-15 30 40)"/>
+        <ellipse cx="50" cy="34" rx="8" ry="20" fill="#F3EAD9" stroke="#C97B86" stroke-width="2" transform="rotate(8 50 34)"/>
+        <circle cx="46" cy="74" r="2.4" fill="#4A3F3B"/>
+        <circle cx="64" cy="74" r="2.4" fill="#4A3F3B"/>
+        <path d="M50 82 Q55 87 60 82" stroke="#4A3F3B" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <ellipse cx="112" cy="82" rx="28" ry="22" fill="#F6D9DE" stroke="#C97B86" stroke-width="2"/>
+        <ellipse cx="92" cy="46" rx="7" ry="18" fill="#F6D9DE" stroke="#C97B86" stroke-width="2" transform="rotate(-10 92 46)"/>
+        <ellipse cx="110" cy="42" rx="7" ry="18" fill="#F6D9DE" stroke="#C97B86" stroke-width="2" transform="rotate(12 110 42)"/>
+        <circle cx="104" cy="80" r="2.2" fill="#4A3F3B"/>
+        <circle cx="120" cy="80" r="2.2" fill="#4A3F3B"/>
+        <path d="M108 88 Q112 92 116 88" stroke="#4A3F3B" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M80 58 C77 52 68 53 68 61 C68 68 80 76 80 76 C80 76 92 68 92 61 C92 53 83 52 80 58 Z" fill="#C97B86"/>
+      </svg>
+    </div>
+    <button class="envelope-btn" id="envelope-btn" aria-label="Tap the seal to open">
+      <svg viewBox="0 0 220 150" class="envelope-svg">
+        <polygon points="10,30 210,30 210,130 10,130" fill="#F3EAD9" stroke="#C9A46A" stroke-width="2"/>
+        <polygon points="10,30 110,95 210,30" fill="#EADFC7" stroke="#C9A46A" stroke-width="2"/>
+        <polygon points="10,130 90,80 10,45" fill="#F0E6D2" stroke="#C9A46A" stroke-width="1.4" opacity="0.7"/>
+        <polygon points="210,130 130,80 210,45" fill="#F0E6D2" stroke="#C9A46A" stroke-width="1.4" opacity="0.7"/>
+      </svg>
+      <span class="wax-seal" id="wax-seal">
+        <svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="27" fill="#B23A48"/><path d="M30 16 C25 22 18 24 18 32 C18 40 30 47 30 47 C30 47 42 40 42 32 C42 24 35 22 30 16 Z" fill="#8E2B37"/></svg>
+      </span>
+    </button>
+    <p class="tap-hint">tap the seal to open</p>
+  </section>
+
+  <section class="card-screen" data-screen="1" id="screen-1">
+    <div class="paper-card">
+      <div class="mascot-avatar">
+        <svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="29" fill="#F6D9DE" stroke="#C97B86" stroke-width="1.5"/>
+          <circle cx="22" cy="30" r="2" fill="#4A3F3B"/><circle cx="38" cy="30" r="2" fill="#4A3F3B"/>
+          <path d="M22 38 Q30 44 38 38" stroke="#4A3F3B" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+          <path d="M14 16 Q10 6 20 10" stroke="#C97B86" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+          <path d="M46 16 Q50 6 40 10" stroke="#C97B86" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h2 class="card-heading">happy birthday <span class="heart-outline">♡</span></h2>
+      <p class="card-message" id="card-front-message"></p>
+      <button class="btn-soft" id="read-letter-btn">Read My Letter <span class="arrow">→</span></button>
+    </div>
+  </section>
+
+  <section class="card-screen" data-screen="2" id="screen-2">
+    <div class="paper-card letter-card">
+      <div class="mascot-avatar small">
+        <svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="29" fill="#F3EAD9" stroke="#C97B86" stroke-width="1.5"/>
+          <circle cx="22" cy="30" r="2" fill="#4A3F3B"/><circle cx="38" cy="30" r="2" fill="#4A3F3B"/>
+          <path d="M23 37 Q30 42 37 37" stroke="#4A3F3B" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <p class="eyebrow small-caps">✦ a letter, just for you ✦</p>
+      <h2 class="script-heading">My Madamji,</h2>
+      <div class="dotted-divider"></div>
+      <p class="letter-body" id="letter-body"></p>
+      <button class="btn-soft" id="continue-btn">Make a Wish <span class="arrow">→</span></button>
+    </div>
+  </section>
+
+  <section class="card-screen" data-screen="3" id="screen-3">
+    <h2 class="soft-heading small">a tiny bouquet of<br>birthday wishes</h2>
+    <p class="script-sub small">pick each flower — there's a little wish inside ♡</p>
+    <div class="bouquet-grid" id="bouquet-grid"></div>
+    <div class="basket-wrap">
+      <svg viewBox="0 0 200 90" class="basket-svg">
+        <path d="M20 30 L180 30 L165 85 L35 85 Z" fill="#D8B478" stroke="#B8956A" stroke-width="2"/>
+        <path d="M20 30 L180 30" stroke="#B8956A" stroke-width="3"/>
+        <path d="M60 30 C60 10 140 10 140 30" fill="none" stroke="#B8956A" stroke-width="3"/>
+      </svg>
+      <div class="basket-flowers" id="basket-flowers"></div>
+    </div>
+    <button class="btn-soft" id="to-finale-btn">One Last Thing <span class="arrow">→</span></button>
+  </section>
+
+  <section class="card-screen" data-screen="4" id="screen-4">
+    <div class="mascot-wrap small">
+      <svg viewBox="0 0 100 90" class="mascot-svg">
+        <ellipse cx="50" cy="55" rx="34" ry="26" fill="#F6D9DE" stroke="#C97B86" stroke-width="2"/>
+        <ellipse cx="30" cy="20" rx="8" ry="20" fill="#F6D9DE" stroke="#C97B86" stroke-width="2" transform="rotate(-12 30 20)"/>
+        <ellipse cx="50" cy="16" rx="8" ry="20" fill="#F6D9DE" stroke="#C97B86" stroke-width="2" transform="rotate(6 50 16)"/>
+        <circle cx="42" cy="52" r="2.4" fill="#4A3F3B"/>
+        <circle cx="60" cy="52" r="2.4" fill="#4A3F3B"/>
+        <path d="M44 61 Q51 66 58 61" stroke="#4A3F3B" stroke-width="2" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <p class="eyebrow">✦ happy birthday, madamji ✦</p>
+    <h2 class="script-heading big">I Love You<br>Endlessly ♡</h2>
+    <p class="finale-credit">made with ❤️ by Varun</p>
+    <button class="btn-soft" id="replay-btn">Read It Again ↻</button>
+  </section>
+
+</div>
+
+<!-- Wish popup -->
+<div class="wish-overlay" id="wish-overlay">
+  <div class="wish-modal" id="wish-modal">
+    <div class="flower-icon" id="wish-icon"></div>
+    <span class="flower-label" id="wish-label"></span>
+    <p class="wish-modal-text" id="wish-text"></p>
+    <button class="wish-close" id="wish-close">Close ♡</button>
+  </div>
+</div>
+
+<button class="stage-nav prev" id="stage-nav-prev" aria-label="Previous">‹</button>
+<button class="stage-nav next" id="stage-nav-next" aria-label="Next">›</button>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const CONFIG = {
+    cardFrontMessage: "Today is yours. A whole little garden of wishes — for every laugh we've shared, every silly moment, and every reason you make the world brighter. Pause for a beat, and let me say it properly.",
+    letterBody:
+`Happy Birthday, Madamji! ❤️🎂
+
+​You make every day brighter, my life happier, and every moment more precious. ❤️💖
+​Thank you for being the most amazing person in my life. ❤️ I hope this year brings you endless happiness, laughter, success, good health, and everything your heart desires... ❤️🌹 (of course, with me and from me! 🤭😛❤️)
+​May all your dreams come true, and may your beautiful smile always shine as brightly as it does today. I promise to do everything I can to keep that smile on your face, today and always.
+​Speaking of always... there is no one else I’d rather walk through life with. You are my today, and I want you to be my tomorrow. Will you make me the happiest person alive and do me the honor of being my forever betterhalf my girl ?💍✨
+​Happy Birthday once again, Madamji! ❤️🎉
+I love you endlessly. ❤️🌹`,
+    bouquetWishes: [
+      { label: 'the way you laugh', text: "your laugh is one of those sounds that just makes a room feel warmer. wishing you a year full of the kind of moments that bring it out again and again." },
+      { label: 'the way you show up', text: "you remember the small things — the worry from a tuesday, the random text on a hard day. it always feels like being seen, not just heard. wishing you the same softness back this year." },
+      { label: 'the little things', text: "thank you for the small and unseen things — the way you check in, the jokes only we get, the quiet patience when i'm being too much. i noticed. i still notice." },
+      { label: 'just you', text: "no big reason needed for this one. just — happy birthday. i love the person you are, exactly as you are." }
+    ]
+  };
+
+  const screens = Array.from(document.querySelectorAll('.card-screen'));
+  const progressDotsWrap = document.getElementById('progress-dots');
+  let currentIndex = 0;
+
+  screens.forEach(() => {
+    const dot = document.createElement('span'); dot.className = 'progress-dot';
+    progressDotsWrap.appendChild(dot);
+  });
+  const progressDots = Array.from(progressDotsWrap.children);
+
+  function updateProgressDots() {
+    progressDots.forEach((d, i) => {
+      d.classList.toggle('done', i < currentIndex);
+      d.classList.toggle('current', i === currentIndex);
+    });
+  }
+  function goToScreen(index) {
+    if (index < 0 || index >= screens.length) return;
+    screens[currentIndex].classList.remove('active');
+    screens[index].classList.add('active');
+    currentIndex = index;
+    updateProgressDots();
+    onScreenEnter(currentIndex);
+  }
+  screens[0].classList.add('active');
+  updateProgressDots();
+
+  document.getElementById('stage-nav-prev').addEventListener('click', () => goToScreen(currentIndex - 1));
+  document.getElementById('stage-nav-next').addEventListener('click', () => goToScreen(currentIndex + 1));
+  window.addEventListener('keydown', (e) => {
+    if (document.getElementById('wish-overlay').classList.contains('open')) {
+      if (e.key === 'Escape') closeWish();
+      return;
+    }
+    if (e.key === 'ArrowRight') goToScreen(currentIndex + 1);
+    if (e.key === 'ArrowLeft') goToScreen(currentIndex - 1);
+  });
+
+  let touchStartX = null, touchStartY = null;
+  document.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    if (touchStartX === null) return;
+    // Ignore swipes while the wish popup is open
+    if (!document.getElementById('wish-overlay').classList.contains('open')) {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      const dy = e.changedTouches[0].clientY - touchStartY;
+      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        if (dx < 0) goToScreen(currentIndex + 1); else goToScreen(currentIndex - 1);
+      }
+    }
+    touchStartX = null; touchStartY = null;
+  }, { passive: true });
+
+  function onScreenEnter(index) {
+    if (index === 1) typeCardFrontMessage();
+    if (index === 2) typeLetterBody();
+  }
+
+  const canvas = document.getElementById('ambient-canvas');
+  const ctx = canvas.getContext('2d');
+  function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  const petalCount = window.innerWidth < 700 ? 10 : 16;
+  const petals = Array.from({ length: petalCount }, () => ({
+    x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+    size: 5 + Math.random() * 6, speedY: 0.15 + Math.random() * 0.25,
+    drift: (Math.random() - 0.5) * 0.3, angle: Math.random() * Math.PI * 2,
+    spin: (Math.random() - 0.5) * 0.015, opacity: 0.25 + Math.random() * 0.3
+  }));
+  function drawPetal(p) {
+    ctx.save(); ctx.globalAlpha = p.opacity;
+    ctx.translate(p.x, p.y); ctx.rotate(p.angle);
+    ctx.beginPath(); ctx.ellipse(0, 0, p.size * 0.55, p.size * 0.3, 0, 0, Math.PI * 2);
+    ctx.fillStyle = '#F6D9DE'; ctx.fill(); ctx.restore();
+  }
+  function animatePetals() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    petals.forEach((p) => {
+      p.y += p.speedY; p.x += p.drift; p.angle += p.spin;
+      if (p.y > canvas.height + 20) { p.y = -20; p.x = Math.random() * canvas.width; }
+      drawPetal(p);
+    });
+    requestAnimationFrame(animatePetals);
+  }
+  animatePetals();
+
+  document.getElementById('envelope-btn').addEventListener('click', function() {
+    this.classList.add('opened');
+    setTimeout(() => goToScreen(1), 480);
+  });
+
+  const cardFrontMessageEl = document.getElementById('card-front-message');
+  let cardFrontTyped = false;
+  function typeCardFrontMessage() {
+    if (cardFrontTyped) return;
+    cardFrontTyped = true;
+    typeText(cardFrontMessageEl, CONFIG.cardFrontMessage, 20);
+  }
+  document.getElementById('read-letter-btn').addEventListener('click', () => goToScreen(2));
+
+  const letterBodyEl = document.getElementById('letter-body');
+  let letterTyped = false;
+  function typeLetterBody() {
+    if (letterTyped) return;
+    letterTyped = true;
+    typeText(letterBodyEl, CONFIG.letterBody, 14);
+  }
+  function typeText(el, text, speedMs) {
+    let i = 0;
+    function step() {
+      if (i <= text.length) { el.textContent = text.slice(0, i); i++; setTimeout(step, speedMs); }
+    }
+    step();
+  }
+
+  document.getElementById('continue-btn').addEventListener('click', () => goToScreen(currentIndex + 1));
+
+  /* ---------- Bouquet + wish popup ---------- */
+  const bouquetGrid = document.getElementById('bouquet-grid');
+  const basketFlowers = document.getElementById('basket-flowers');
+  const flowerColors = ['#C97B86', '#D8B478', '#E8A0AD', '#B98BA3'];
+  function flowerSVG(color) {
+    return `<svg viewBox="0 0 40 40"><g fill="${color}"><circle cx="20" cy="12" r="7"/><circle cx="30" cy="20" r="7"/><circle cx="20" cy="28" r="7"/><circle cx="10" cy="20" r="7"/></g><circle cx="20" cy="20" r="6" fill="#F0D9A0"/></svg>`;
+  }
+
+  const wishOverlay = document.getElementById('wish-overlay');
+  const wishIcon = document.getElementById('wish-icon');
+  const wishLabel = document.getElementById('wish-label');
+  const wishText = document.getElementById('wish-text');
+
+  function openWish(wish, color) {
+    wishIcon.innerHTML = flowerSVG(color);
+    wishLabel.textContent = wish.label;
+    wishText.textContent = wish.text;
+    wishOverlay.classList.add('open');
+  }
+  function closeWish() { wishOverlay.classList.remove('open'); }
+
+  document.getElementById('wish-close').addEventListener('click', closeWish);
+  wishOverlay.addEventListener('click', (e) => { if (e.target === wishOverlay) closeWish(); });
+
+  CONFIG.bouquetWishes.forEach((wish, i) => {
+    const color = flowerColors[i % flowerColors.length];
+    const btn = document.createElement('button'); btn.className = 'flower-btn'; btn.type = 'button';
+    btn.innerHTML = `<div class="flower-front">${flowerSVG(color)}<span>pick me</span></div>`;
+    btn.addEventListener('click', () => {
+      if (!btn.classList.contains('picked')) {
+        btn.classList.add('picked');
+        const mini = document.createElement('span');
+        mini.textContent = '🌸'; mini.style.opacity = '0';
+        mini.style.transition = 'opacity 0.4s ease, transform 0.4s ease'; mini.style.transform = 'translateY(6px)';
+        basketFlowers.appendChild(mini);
+        requestAnimationFrame(() => { mini.style.opacity = '1'; mini.style.transform = 'translateY(0)'; });
+      }
+      openWish(wish, color);
+    });
+    bouquetGrid.appendChild(btn);
+  });
+
+  document.getElementById('to-finale-btn').addEventListener('click', () => goToScreen(currentIndex + 1));
+  document.getElementById('replay-btn').addEventListener('click', () => goToScreen(0));
+});
+</script>
+</body>
+</html>
