@@ -10,7 +10,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600;1,700&family=Caveat:wght@500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 :root{
@@ -22,9 +22,9 @@
   --gold-line:#D8B478;
   --seal:#B23A48;
   --shadow-soft:0 20px 50px rgba(74,63,59,0.12);
-  --font-heading:'Playfair Display', serif;
-  --font-hand:'Caveat', cursive;
-  --font-ui:'Quicksand', sans-serif;
+  --font-heading:'Aptos Narrow','Aptos','Archivo Narrow','Segoe UI',sans-serif;
+  --font-hand:'Aptos Narrow','Aptos','Archivo Narrow','Segoe UI',sans-serif;
+  --font-ui:'Aptos Narrow','Aptos','Archivo Narrow','Segoe UI',sans-serif;
 }
 @media (prefers-reduced-motion: reduce){
   *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
@@ -61,19 +61,19 @@ img{ max-width:100%; display:block; }
 .card-screen.active{ opacity:1; visibility:visible; pointer-events:auto; transform:translateX(0); }
 .card-screen.leaving-left{ transform:translateX(-40px); }
 .eyebrow{
-  font-family:var(--font-ui); font-weight:600; letter-spacing:0.14em; text-transform:lowercase;
+  font-family:var(--font-ui); font-weight:700; letter-spacing:0.14em; text-transform:lowercase;
   font-size:0.82rem; color:var(--rose-deep); margin-bottom:14px;
 }
 .eyebrow.small-caps{ letter-spacing:0.08em; font-size:0.72rem; }
 .soft-heading{
-  font-family:var(--font-heading); font-style:italic; font-weight:700;
+  font-family:var(--font-heading); font-style:normal; font-weight:700;
   font-size:clamp(1.9rem, 6vw, 3rem); line-height:1.25; color:var(--ink);
 }
 .soft-heading.small{ font-size:clamp(1.5rem, 5vw, 2.2rem); }
-.script-sub{ font-family:var(--font-hand); font-size:clamp(1.3rem, 4vw, 1.8rem); color:var(--rose-deep); margin-top:10px; }
+.script-sub{ font-family:var(--font-hand); font-weight:600; font-size:clamp(1.3rem, 4vw, 1.8rem); color:var(--rose-deep); margin-top:10px; }
 .script-sub.small{ font-size:clamp(1rem, 3vw, 1.2rem); margin-top:8px; max-width:340px; }
 .script-heading{
-  font-family:var(--font-heading); font-style:italic; font-weight:700;
+  font-family:var(--font-heading); font-style:normal; font-weight:700;
   font-size:clamp(1.7rem, 5.5vw, 2.4rem); color:var(--rose-deep); margin:6px 0 4px;
 }
 .script-heading.big{ font-size:clamp(2.2rem, 8vw, 3.4rem); color:#fff; line-height:1.3; }
@@ -96,20 +96,20 @@ img{ max-width:100%; display:block; }
 }
 .mascot-avatar.small{ width:52px; height:52px; }
 .card-heading{
-  font-family:var(--font-heading); font-style:italic; font-weight:700;
+  font-family:var(--font-heading); font-style:normal; font-weight:700;
   font-size:clamp(1.5rem, 5vw, 2rem); color:var(--ink); margin:20px 0 14px;
 }
 .card-message{
-  font-family:var(--font-hand); font-size:clamp(1.05rem, 3vw, 1.25rem); line-height:1.6; color:var(--ink);
+  font-family:var(--font-hand); font-weight:500; font-size:clamp(1.05rem, 3vw, 1.25rem); line-height:1.6; color:var(--ink);
   margin-bottom:26px;
 }
 .dotted-divider{ border-top:1.5px dotted var(--gold-line); width:70%; margin:0 auto 22px; }
 .letter-body{
-  font-family:var(--font-hand); font-size:clamp(1.05rem, 2.8vw, 1.25rem); line-height:1.75;
+  font-family:var(--font-hand); font-weight:500; font-size:clamp(1.05rem, 2.8vw, 1.25rem); line-height:1.75;
   color:var(--ink); text-align:left; white-space:pre-wrap; margin-bottom:26px;
 }
 .btn-soft{
-  font-family:var(--font-ui); font-weight:600; font-size:0.92rem; color:#fff;
+  font-family:var(--font-ui); font-weight:700; font-size:0.92rem; color:#fff;
   padding:14px 30px; border-radius:100px; background:var(--rose-deep);
   box-shadow:0 10px 24px rgba(201,123,134,0.35); transition:transform 0.25s ease;
 }
@@ -138,7 +138,7 @@ img{ max-width:100%; display:block; }
   transition:transform 0.25s ease, opacity 0.3s ease, border-color 0.3s ease;
 }
 .flower-front svg{ width:40px; height:40px; }
-.flower-front span{ font-family:var(--font-ui); font-size:0.62rem; color:var(--rose-deep); font-weight:600; letter-spacing:0.05em; }
+.flower-front span{ font-family:var(--font-ui); font-size:0.62rem; color:var(--rose-deep); font-weight:700; letter-spacing:0.05em; }
 .flower-btn:hover .flower-front{ transform:translateY(-3px); }
 .flower-btn.picked .flower-front{ opacity:0.55; border-style:solid; border-color:var(--rose-deep); transform:scale(0.96); }
 .flower-btn.picked .flower-front span{ color:rgba(74,63,59,0.5); }
@@ -168,10 +168,10 @@ img{ max-width:100%; display:block; }
   color:var(--rose-deep); font-weight:700; margin-bottom:10px; display:block;
 }
 .wish-modal-text{
-  font-family:var(--font-hand); font-size:1.2rem; line-height:1.6; color:var(--ink); margin-bottom:22px;
+  font-family:var(--font-hand); font-weight:500; font-size:1.2rem; line-height:1.6; color:var(--ink); margin-bottom:22px;
 }
 .wish-close{
-  font-family:var(--font-ui); font-weight:600; font-size:0.85rem; color:#fff;
+  font-family:var(--font-ui); font-weight:700; font-size:0.85rem; color:#fff;
   padding:10px 26px; border-radius:100px; background:var(--rose-deep);
   box-shadow:0 8px 18px rgba(201,123,134,0.35);
 }
